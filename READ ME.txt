@@ -1,0 +1,51 @@
+Before You Start
+1. Create two Key pairs under EC2 in AWS console (1 for EC2
+instance and 1 for cluster). Save both files.
+2. Go to "IAM" and go to "Users" on the left side. Add
+a user with Programmatic access and sufficient access to do
+this assignment (I gave my user AdministratorAccess).
+3. Save the "Access key ID" and "Secret access key".
+
+Launch an EC2 instance and configure
+1. Go to EC2 and "Launch Instance"
+2. I used "Amazon Linux AMI 2018.03.0 (HVM), SSD Volume Type"
+but feel free to use what you want.
+3. Launch instance and connect to it using SSH and one key saved
+Example: "ssh -i "<key-file>" <your-server>"
+4. Once you are connected type "aws configure" to configure
+your credentials with the EC2 instance
+5. Copy and paste your "Access Key ID" and hit enter
+6. Copy and paste your "Secrect access key" and hit enter
+7. Decide the "Default region name"
+8. Just hit enter for "Default output format"
+
+Create Cluster
+1. Download this repository "https://github.com/amplab/spark-
+ec2/tree/branch-2.0" with this branch onto your EC2 instance.
+You can download the zip and use scp to transfer the zip onto
+your instance or you can clone the github repository.
+2. Navigate into "/home/ec2-user/spark-ec2-branch-2.0" of
+the directory you downloaded.
+3. Use scp to transfer your cluster key pair you made before
+into this directory for easier access
+scp -i <EC2-keypair-file> <desired-transfer-file> <EC2-server-IP>
+:<directory-of-EC2>
+4. While in the same directory, use spark-ec2 script to create
+a cluster
+Example: ./spark-ec2 --slaves=3 --key-pair=cluster-key
+--identity-file=cluster-key.pem --region=us-east-1 --zone=us-
+east-1b launch my-spark-cluster
+5. This can take 10 to 15 mins finish.
+6. At the end a link can be given for you to see the Web UI.
+7. Once done, log into cluster using
+./spark-ec2 -k <keypair> -i <key-file> login <cluster-name>
+
+Run on Cluster
+1. Export your Java application into a .jar file
+2. Transfer .jar file into the master node
+3. Transfer TrainingDataset.csv and ValidationDataset.csv to
+master node.
+4. Copy .jar, and csv files into slave nodes using
+"~/spark-ec2/copy-dir <desired-file>
+5. Use "~/spark/bin/spark-submit --deploy-mode client <.jar-file>
+to run program on cluster
